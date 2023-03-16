@@ -8,11 +8,12 @@
 #endif
 #include <ESPAsyncWebSrv.h>
 
-const char* ssid = "iPhone de Mailen";
+const char* ssid = "OPPO";
 const char* password = "12345678";
 AsyncWebServer server (80);
 
 void setup() {
+  pinMode(2, OUTPUT);
   Serial.begin(115200);
   conectarse();
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -29,6 +30,17 @@ void setup() {
   server.on("/adios", HTTP_GET, [](AsyncWebServerRequest *request){
     request -> send (200, "text/html", "<H1> adios </H1>");
   });
+
+   server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request){
+    digitalWrite(2, HIGH); 
+    request -> send (200, "text/html", "<H1> adios </H1>");
+  });
+
+   server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request){
+    digitalWrite(2, LOW); 
+    request -> send (200, "text/html", "<H1> adios </H1>");
+  });
+  
   server.begin();
 } // FIN SETUP
 
@@ -42,16 +54,7 @@ void conectarse(){
     while(WiFi.status() != WL_CONNECTED){
       delay(500);
       Serial.print(".");
-      digitalWrite(2, LOW);
     }
 
-    while(WiFi.status() == WL_CONNECTED){
-      delay(2000);
-      digitalWrite(2, HIGH);
-      Serial.println("");
-      Serial.println("WiFi connected");
-      Serial.println("IP address: ");
-      Serial.println(WiFi.localIP());
-    }
     Serial.print(WiFi.localIP());
 }
