@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+     <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin=""></script>
+    
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+    <h1>Busqueda con leafet</h1>
+    <form action="/my-handling-form-page" method="post">
+        <ul>
+        <li>Coordenadas</li>
+        <li>
+        <label for="latitud">X:</label>
+        <input type="text" id="latitud" name="latitud">
+        </li>
+        <li>
+        <label for="longitud">Y:</label>
+        <input type="text" id="longitud" name="longitud">
+        </li>
+        <li>
+        <label for="mensaje">Mensaje:</label>
+        <input id="mensaje" name="mensaje"></textarea>
+        </li>
+        </ul>
+        <li class="button">
+            <br><button type="submit">Enviar</button>
+        </li>
+    </form>
+
+    <script>
+        //Variable global para guardar la marca de referencia anterior
+        var previousMarker = null;
+        // Obtener referencia al formulario y al botón de enviar
+        var form = document.querySelector('form');
+        var submitButton = form.querySelector('button[type="submit"]');
+
+        // Agregar controlador de eventos para el botón de enviar
+        submitButton.addEventListener('click', function (event) {
+            // Prevenir el comportamiento predeterminado del formulario
+            event.preventDefault();
+
+            // Obtener los valores de los campos de entrada
+            var latitud = parseFloat(form.querySelector('input[name="latitud"]').value);
+            var longitud = parseFloat(form.querySelector('input[name="longitud"]').value);
+            var mensaje = form.querySelector('input[name="mensaje"]').value
+            // Eliminar la marca anterior si existe
+            if (previousMarker) {
+                map.removeLayer(previousMarker);
+            }
+
+            // Crear un nuevo marcador y agregarlo al mapa
+            var marker = L.marker([latitud, longitud]).addTo(map);
+            marker.bindPopup(mensaje).openPopup();
+
+            // Actualizar la variable global con la nueva marca
+            previousMarker = marker;
+        });
+
+        var map = L.map('map').setView([19.54189, -96.92724], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+       
+    </script>
+    
+
+</body>
+</html>
